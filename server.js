@@ -296,55 +296,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// =========================
+// ========================  nm  =
 // Protected Weather API
 // GET /weather?city=Riyadh
 // =========================
-app.get("/weather", async (req, res) => {
-  const auth = req.headers.authorization;
 
-  if (!auth) {
-    return res.status(401).json({ error: "Missing token" });
-  }
-
-  const token = auth.split(" ")[1];
-
-  try {
-    jwt.verify(token, JWT_SECRET);
-  } catch (err) {
-    return res.status(401).json({ error: "Invalid token" });
-  }
-
-  const city = req.query.city;
-
-  if (!city) {
-    return res.status(400).json({ error: "City required" });
-  }
-
-  try {
-    const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1`;
-    const weatherResponse = await fetch(url);
-
-    if (!weatherResponse.ok) {
-      return res.status(500).json({ error: "Error from weather API" });
-    }
-
-    const data = await weatherResponse.json();
-    const current = data.current_condition?.[0] || {};
-
-    return res.json({
-      city,
-      temperature: current.temp_C,
-      description: current.weatherDesc?.[0]?.value,
-      humidity: current.humidity,
-      feelsLike: current.FeelsLikeC,
-      observationTime: current.observation_time
-    });
-  } catch (err) {
-    console.error("Weather fetch error:", err);
-    return res.status(500).json({ error: "Server error during weather fetch" });
-  }
-});
 
 // Start server
 app.listen(PORT, () =>
